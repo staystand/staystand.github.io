@@ -6,13 +6,16 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://staystand.com">
-  <title>Archives | Hexo</title>
+  <title>springboot和tomcat jar包冲突 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http:&#x2F;&#x2F;staystand.com&#x2F;archives&#x2F;index.html">
+  <meta name="description" content="问题使用外部tomcat启动springboot项目失败，报错： 1234567ERROR: Context initialization failedorg.springframework.beans.factory.BeanCreationException: Error creating bean with name &amp;apos;entityManager&amp;apos; defined in com.zgglyu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="springboot和tomcat jar包冲突">
+<meta property="og:url" content="http:&#x2F;&#x2F;staystand.com&#x2F;2019&#x2F;11&#x2F;28&#x2F;springboot%E5%92%8Ctomcat-jar%E5%8C%85%E5%86%B2%E7%AA%81&#x2F;index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="问题使用外部tomcat启动springboot项目失败，报错： 1234567ERROR: Context initialization failedorg.springframework.beans.factory.BeanCreationException: Error creating bean with name &amp;apos;entityManager&amp;apos; defined in com.zgglyu">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-11-28T09:24:22.361Z">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
@@ -149,103 +152,174 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-springboot和tomcat-jar包冲突" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      springboot和tomcat jar包冲突
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/28/springboot%E5%92%8Ctomcat-jar%E5%8C%85%E5%86%B2%E7%AA%81/" class="archive-article-date">
+
+        
+        <a href="/2019/11/28/springboot%E5%92%8Ctomcat-jar%E5%8C%85%E5%86%B2%E7%AA%81/" class="archive-article-date">
   	<time datetime="2019-11-28T07:55:37.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-28</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/28/springboot%E5%92%8Ctomcat-jar%E5%8C%85%E5%86%B2%E7%AA%81/">springboot和tomcat jar包冲突</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>使用外部tomcat启动springboot项目失败，报错：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ERROR: Context initialization failed</span><br><span class="line">org.springframework.beans.factory.BeanCreationException: Error creating bean with name <span class="string">'entityManager'</span> defined <span class="keyword">in</span> com.zgglyun.dfdts.config.manager.AppConfig: Invocation of init method failed; nested exception is javax.persistence.PersistenceException: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is org.hibernate.cfg.beanvalidation.IntegrationException: Error activating Bean Validation integration</span><br><span class="line">....</span><br><span class="line">Caused by: javax.persistence.PersistenceException: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is org.hibernate.cfg.beanvalidation.IntegrationException: Error activating Bean Validation integration</span><br><span class="line">....</span><br><span class="line">Caused by: org.hibernate.cfg.beanvalidation.IntegrationException: Error activating Bean Validation integration</span><br><span class="line">`</span><br></pre></td></tr></table></figure>
 
-        <div class="article-info info-on-right">
-          
-          
+<h3 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h3><p>springboot本身提供了内置tomcat，如果引入外部tomcat的话lib文件夹下的jar包会冲突。需要解决冲突。</p>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><p>方法1.移除内置的tomcat </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;</span><br><span class="line">    &lt;exclusions&gt;</span><br><span class="line">        &lt;exclusion&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter-tomcat&lt;/artifactId&gt;</span><br><span class="line">        &lt;/exclusion&gt;</span><br><span class="line">    &lt;/exclusions&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.apache.tomcat.embed&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;tomcat-embed-jasper&lt;/artifactId&gt;</span><br><span class="line">    &lt;scope&gt;provided&lt;/scope&gt;</span><br><span class="line"> &lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
 
+<p>方法2. 将scop置为provided </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter-tomcat&lt;/artifactId&gt;</span><br><span class="line">            &lt;scope&gt;provided&lt;/scope&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.tomcat.embed&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;tomcat-embed-jasper&lt;/artifactId&gt;</span><br><span class="line">            &lt;scope&gt;provided&lt;/scope&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="springboot启动项目和外部tomcat启动有什么区别"><a href="#springboot启动项目和外部tomcat启动有什么区别" class="headerlink" title="springboot启动项目和外部tomcat启动有什么区别"></a>springboot启动项目和外部tomcat启动有什么区别</h3><p>springboot内置tomcat 访问项目不需要加项目名 <a href="http://localhost:8080/test001" target="_blank" rel="noopener">http://localhost:8080/test001</a></p>
+<p>外部的tomcat 访问需要加项目名 <a href="http://localhost:8080/myPro/test001" target="_blank" rel="noopener">http://localhost:8080/myPro/test001</a></p>
+<h3 id="ps"><a href="#ps" class="headerlink" title="ps"></a>ps</h3><p>scop是限制dependendy的作用范围分为五个等级<br>1）compile：也是默认值适用于所有阶段（编译，运行，测试，发布<br>2）provided:在编译测试时有效，在运行时无效<br>3）runtime:在运行，测试时有效，在编译代码时无效<br>3）test：只在测试时有效<br>4）system:在编译，测试时有效，在运行时无效。（一般和systemPath一起使用，谨慎使用）</p>
+<h3 id="ps-ps"><a href="#ps-ps" class="headerlink" title="ps ps"></a>ps ps</h3><p>maven常用命令</p>
+<p>|命令|说明|<br>|：–|：–|<br>|mvn clean|清理项目产生的临时文件，一般在target下面|<br>|mvn compile|编译源代码，一般是src/main/java|<br>|mvn package|项目打包生成jar或者war,一般在target下|<br>|mvn test|测试命令，一般是执行src/test/java下的junit|<br>|mvn install|将打包的文件安装到本地仓库中|<br>|mvn depoly|将打包的文件部署到远程仓库|<br>|mvn site|生成项目相关网站|<br>|mvn temcat:run|用tomcat容器运行项目|<br>|mvn jetty:run|用jetty运行项目|</p>
+<p>maven的生命周期：</p>
+<p>1）clean:清理上一次构建生成的文件<br>2）validate:验证<br>3)compile:编译<br>4)test:测试<br>5）package:打包<br>6）varify:检查<br>7）install:安装到本地仓库<br>8）deploly:部署</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" target="_blank" rel="noopener" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" target="_blank" rel="noopener" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" target="_blank" rel="noopener" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" target="_blank" rel="noopener" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;" target="_blank" rel="noopener"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://staystand.com/2019/11/28/springboot%E5%92%8Ctomcat-jar%E5%8C%85%E5%86%B2%E7%AA%81/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/27/hello-world/" class="archive-article-date">
-  	<time datetime="2019-11-27T06:37:31.116Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-27</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2019/11/27/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Hello World</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" target="_blank" rel="noopener" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/27/hello-world/">Hello World</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/22/%E9%80%92%E5%BD%92/" class="archive-article-date">
-  	<time datetime="2019-11-22T08:27:16.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-22</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/22/%E9%80%92%E5%BD%92/">递归</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
   
 
-    
+  
 
 
           </div>
@@ -268,8 +342,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
